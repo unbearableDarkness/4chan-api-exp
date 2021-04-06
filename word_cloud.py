@@ -5,14 +5,11 @@ import datetime
 import numpy
 import html
 import json
-import sys
 import re
 import os
 
 from wordcloud import WordCloud, STOPWORDS
 from PIL import Image
-
-current_working_directory = sys.argv[0]
 
 boards = [
     "a",
