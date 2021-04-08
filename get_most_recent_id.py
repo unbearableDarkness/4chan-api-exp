@@ -73,10 +73,11 @@ def get_last_4chan_id(board):
 
     for page_data in data:
         for thread in page_data["threads"]:
-            threads_info.append((thread["no"], thread["now"]))
-            if thread["replies"] > 0:
-                for reply in thread["last_replies"]:
-                    replies_info.append((reply["no"], reply["now"]))
+            if "sticky" not in thread:
+                threads_info.append((thread["no"], thread["now"]))
+                if thread["replies"] > 0:
+                    for reply in thread["last_replies"]:
+                        replies_info.append((reply["no"], reply["now"]))
 
     # sort the posts by date
     [r.sort(key=lambda x: [d for d in x[1] if d.isdigit()]) for r in [threads_info, replies_info]]
