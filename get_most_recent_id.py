@@ -3,66 +3,14 @@ import random
 import json
 import re
 
-boards = [
-    "a",
-    "c",
-    "g",
-    "k",
-    "m",
-    "o",
-    "p",
-    "v",
-    "vg",
-    "vm",
-    "vmg",
-    "vr",
-    "vrpg",
-    "vst",
-    "w",
-    "vip",
-    "qa",
-    "cm",
-    "lgbt",
-    "3",
-    "adv",
-    "an",
-    "biz",
-    "cg",
-    "ck",
-    "co",
-    "diy",
-    "fa",
-    "fit",
-    "gd",
-    "his",
-    "int",
-    "jp",
-    "lit",
-    "mlp",
-    "mu",
-    "n",
-    "news",
-    "out",
-    "po",
-    "pw",
-    "qst",
-    "sci",
-    "sp",
-    "tg",
-    "toy",
-    "trv",
-    "tv",
-    "vp",
-    "vt",
-    "wsg",
-    "wsr",
-    "x",
-    "xs"
-]
+boards = ["a", "b", "c", "d", "e", "f", "g", "gif", "h", "hr", "k", "m", "o", "p", "r", "s", "t", "u", "v", "vg", "vm",
+          "vmg", "vr", "vrpg", "vst", "w", "wg", "i", "ic", "r9k", "s4s", "vip", "qa", "cm", "hm", "lgbt", "y", "3",
+          "aco", "adv", "an", "bant", "biz", "cgl", "ck", "co", "diy", "fa", "fit", "gd", "hc", "his", "int", "jp",
+          "lit", "mlp", "mu", "n", "news", "out", "po", "pol", "pw", "qst", "sci", "soc", "sp", "tg", "toy", "trv",
+          "tv", "vp", "vt", "wsg", "wsr", "x", "xs"]
 
 
 def get_last_4chan_id(board):
-    idx = random.randint(0, len(_4chan_boards_) - 1)
     response = requests.get("https://a.4cdn.org/" + board + "/catalog.json")
     # json -> dictionary
     # get the json object
