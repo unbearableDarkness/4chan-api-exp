@@ -1,10 +1,10 @@
 import json
 import os
 import time
+import sys
 import urllib.request
 from collections import deque
 from threading import Thread
-
 import requests
 from requests import exceptions as rex
 
@@ -41,8 +41,8 @@ class Grabber:
             thread_data = json.loads(thread_response.text)
         except (rex.HTTPError, rex.InvalidURL) as e:
             # noinspection PyUnboundLocalVariable
-            print(" Could not fetch {1}. {0}\n".format(thread_endpoint, e), end='')
-            exit(-1)
+            print("Could not fetch {1}. {0}\n".format(thread_endpoint, e), end='')
+            sys.exit(-1)
 
         # noinspection PyUnboundLocalVariable
         for post in thread_data["posts"]:
@@ -62,7 +62,7 @@ class Grabber:
             try:
                 el = self.jobs.pop()
                 urllib.request.urlretrieve(el[0], el[1])
-            except (IndexError, urllib.error.HTTPError) as e:
+            except (IndexError, urllib.error.HTTPError):
                 # pass
                 # print(e, '\n', end='')
                 if not self.producer_running:
@@ -71,23 +71,41 @@ class Grabber:
 
 if __name__ == '__main__':
     myurl = input("Enter the thread URL: ")
-    if myurl.split('/')[3] not in boards:
-        print("Error, that board doesn't exist.")
-        exit(-1)
+
+    # parsers = argparse.ArgumentParser()
+    # parsers.add_argument("id", type=str)
+    # args = parsers.parse_args()
+
     # https://boards.4channel.org/[board]/thread/[#thread]
+
+    try:
+        if myurl.split('/')[3] not in boards:
+            print("Error, that board doesn't exist.")
+            exit(-1)
+
+    except IndexError as ex:
+        print(ex, "\n", end='')
+        print("Error, please enter a valid url\n.", end='')
+        sys.exit(-1)
 
     myboard:str = myurl.split('/')[3]
     mythread_id:str = myurl.split('/')[5]
     directory:str = "{0}-{1}".format(myboard, mythread_id)
-    destination_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), IMAGES_ROOT_FOLDER, directory)
+    destination_folder:str = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), IMAGES_ROOT_FOLDER)
+    destination_path: str = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), IMAGES_ROOT_FOLDER, directory)
+
+    try:
+        os.makedirs(destination_folder)
+    except FileExistsError:
+        pass
     try:
         os.mkdir(destination_path)
     except (FileExistsError, PermissionError) as ex:
         print(ex, '\n', end='')
-        exit(-1)
 
     t1 = time.time()
     g = Grabber(destination_path, myurl)
     g.download()
     t2 = time.time()
     print("Time taken = {0} seconds".format(round(t2 - t1)))
+    sys.exit(0)
