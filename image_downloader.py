@@ -111,5 +111,5 @@ if __name__ == '__main__':
     g = Grabber(destination_path, myurl)
     cc = g.download()
     t2 = time.time()
-    print("Time taken = {0} seconds. Downloaded {1} images.".format(round(t2 - t1)), cc)
+    print("Time taken: {0} seconds. Downloaded {1} images.".format(round(t2 - t1)), cc)
     sys.exit(0)
