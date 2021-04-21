@@ -44,10 +44,12 @@ class Grabber:
             print("Could not fetch {1}. {0}\n".format(thread_endpoint, e), end='')
             sys.exit(-1)
 
+		cc = 0
         # noinspection PyUnboundLocalVariable
         for post in thread_data["posts"]:
             # timestamp
             if "tim" in post:
+				cc += 1
                 # noinspection PyUnboundLocalVariable
                 img_url = "https://i.4cdn.org/{0}/{1}{2}".format(board, post["tim"], post["ext"])
                 img_name = "{0}{1}".format(post["tim"], post["ext"])
@@ -56,6 +58,7 @@ class Grabber:
         self.producer_running = False
         for t in self.t_threads:
             t.join()
+		return cc
 
     def consumer(self):
         while True:
@@ -92,7 +95,7 @@ if __name__ == '__main__':
     mythread_id:str = myurl.split('/')[5]
     directory:str = "{0}-{1}".format(myboard, mythread_id)
     destination_folder:str = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), IMAGES_ROOT_FOLDER)
-    destination_path: str = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), IMAGES_ROOT_FOLDER, directory)
+    destination_path:str = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), IMAGES_ROOT_FOLDER, directory)
 
     try:
         os.makedirs(destination_folder)
@@ -102,10 +105,11 @@ if __name__ == '__main__':
         os.mkdir(destination_path)
     except (FileExistsError, PermissionError) as ex:
         print(ex, '\n', end='')
+		sys.exit(-1)
 
     t1 = time.time()
     g = Grabber(destination_path, myurl)
-    g.download()
+    cc = g.download()
     t2 = time.time()
-    print("Time taken = {0} seconds".format(round(t2 - t1)))
+    print("Time taken = {0} seconds. Downloaded {1} images.".format(round(t2 - t1)), cc)
     sys.exit(0)
